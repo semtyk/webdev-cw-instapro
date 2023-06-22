@@ -2,9 +2,10 @@ import { renderUploadImageComponent } from "./upload-image-component.js";
 import { renderHeaderComponent } from "./header-component.js";
 
 export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
+  let imageUrl = "";
+
   const render = () => {
-    let imageUrl = "";
-    // TODO: Реализовать страницу добавления поста
+    // TODO: Реализовать страницу добавления поста ++
     const appHtml = `
 <div class="page-container">
           <div class="header-container"></div>
@@ -72,7 +73,7 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
 
       onAddPostClick({
         description: textDesc,
-        imageUrl: imageUrl,
+        imgUrl: imageUrl
       });
     });
   };
