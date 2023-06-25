@@ -24,7 +24,7 @@ export function getPosts({ token }) {
 }
 
 export function sendPosts({ description, pictureUrl, token }) {
-  console.log("Добавляю пост еще. ..", { description, pictureUrl });
+  
   return fetch(postsHost, {
     method: "POST",
     headers: {
@@ -105,3 +105,24 @@ export function uploadImage({ file }) {
     return response.json();
   });
 }
+
+//Загружает отлайканный/дизлайканный пост в API
+export function sendLikePost ({likeId, token, activeLike}) {
+  return fetch((!activeLike ? postsHost +'/' +likeId +'/like' : postsHost +'/'+likeId+'/dislike'), {
+    method: "POST",
+    headers: {
+      Authorization: token,
+    },
+  })
+    .then((response) => {
+      if (response.status === 401) {
+        throw new Error("Нет авторизации");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      return data.post;
+    });
+}
+
+

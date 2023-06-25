@@ -1,6 +1,7 @@
 import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { posts, goToPage } from "../index.js";
+import { initUpdateLikesListeners } from "../helpers.js";
 
 export function renderPostsPageComponent({ appEl }) {
   
@@ -12,7 +13,11 @@ export function renderPostsPageComponent({ appEl }) {
    */
   //Преобразуем массив обьектов (каждый обьект - содержание поста) в элементы списка разметки
   
-  const postsHtml = posts.map((item) => {
+  const postsHtml = posts.map((item, index) => {
+    let activeLike = '';
+    if (item.isLiked) {
+      activeLike = '-active-like'
+    }
     return `<li class="post">
                     <div class="post-header" data-user-id=${item.user.id}>
                         <img src=${item.user.imageUrl} class="post-header__user-image">
@@ -22,8 +27,8 @@ export function renderPostsPageComponent({ appEl }) {
                       <img class="post-image" src=${item.imageUrl}>
                     </div>
                     <div class="post-likes">
-                      <button data-post-id=${item.id} class="like-button">
-                        <img src="./assets/images/like-active.svg">
+                      <button data-post-id=${item.id} data-index='${index}' class="like-button">
+                        ${ item.isLiked ? '<img src="./assets/images/like-active.svg">' : '<img src="./assets/images/like-not-active.svg">'}
                       </button>
                       <p class="post-likes-text">
                         Нравится: <strong>${item.likes.length}</strong>
@@ -53,6 +58,9 @@ export function renderPostsPageComponent({ appEl }) {
     element: document.querySelector(".header-container"),
   });
 
+
+
+
   for (let userEl of document.querySelectorAll(".post-header")) {
     userEl.addEventListener("click", () => {
       goToPage(USER_POSTS_PAGE, {
@@ -60,4 +68,6 @@ export function renderPostsPageComponent({ appEl }) {
       });
     });
   }
+
+  initUpdateLikesListeners(posts);
 }
