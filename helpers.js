@@ -18,6 +18,11 @@ export function removeUserFromLocalStorage(user) {
   window.localStorage.removeItem("user");
 }
 
+export function letClearForm(form) {
+  form.classList.remove('error');
+};
+
+
 //Функция для включения кнопки лайка под постом
 export const initUpdateLikesListeners = (array) => {
   const token = getToken();

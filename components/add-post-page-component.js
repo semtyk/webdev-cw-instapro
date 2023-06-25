@@ -1,5 +1,6 @@
 import { renderUploadImageComponent } from "./upload-image-component.js";
 import { renderHeaderComponent } from "./header-component.js";
+import { letClearForm } from "../helpers.js";
 
 export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
   let imageUrl = "";
@@ -58,6 +59,11 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
     }
 
 
+    document.getElementById('comment_text').addEventListener('click', () => {
+      letClearForm(document.getElementById('comment_text'));
+    });
+
+
     document.getElementById("add-button").addEventListener("click", () => {
       setError("");  //убираем ошибку (если была в прошлый раз)
       const textDesc = document.getElementById('comment_text').value;
@@ -66,13 +72,18 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
         alert("Не выбрана фотография");
         return;
       }
-      if (!textDesc) {
-        alert('Введите описание');
+
+      if (textDesc.replaceAll("\n", "").replaceAll(' ', '') === "") {
+        document.getElementById('comment_text').classList.add('error');
         return;
       }
 
       onAddPostClick({
-        description: textDesc,
+        description: textDesc
+        .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;"),
         imgUrl: imageUrl
       });
     });

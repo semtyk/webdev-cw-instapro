@@ -118,6 +118,7 @@ export const renderApp = () => {
   }
 
   if (page === ADD_POSTS_PAGE) {
+    
     return renderAddPostPageComponent({
       appEl,
       onAddPostClick({ description, imgUrl }) {
@@ -132,7 +133,7 @@ export const renderApp = () => {
           })
           .catch((error) => {
             console.warn(error);
-            //setError(error.message);
+            setError(error.message);
           });   
       },
     });
