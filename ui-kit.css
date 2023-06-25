@@ -19,6 +19,21 @@
   src: url("./assets/fonts/stratosskyengweb-medium.woff2") format("woff2");
 }
 
+@media (max-width: 767px) {
+
+  /* .post-image-container {
+    height: 300px;
+  } */
+  .post-image-container {
+    height: 320px;
+  }
+
+  .post-image {
+    max-width: 320px;
+  }
+}
+
+
 html {
   /* скрывает скролбары в firefox */
   scrollbar-width: none;
