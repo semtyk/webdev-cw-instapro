@@ -1,7 +1,7 @@
-import { USER_POSTS_PAGE } from "../routes.js";
+import { POSTS_PAGE, USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage } from "../index.js";
-import { initUpdateLikesListeners } from "../helpers.js";
+import { posts, goToPage, user } from "../index.js";
+import { initDeletePost, initUpdateLikesListeners } from "../helpers.js";
 
 export function renderPostsPageComponent({ appEl }) {
   
@@ -26,13 +26,18 @@ export function renderPostsPageComponent({ appEl }) {
                     <div class="post-image-container">
                       <img class="post-image" src=${item.imageUrl}>
                     </div>
+                    <div class="post-likes-with-del">
                     <div class="post-likes">
-                      <button data-post-id=${item.id} data-index='${index}' class="like-button">
-                        ${ item.isLiked ? '<img src="./assets/images/like-active.svg">' : '<img src="./assets/images/like-not-active.svg">'}
+                      <button data-post-id=${item.id} data-index='${index}' class="like-button ">
+                        ${item.isLiked ? '<img src="./assets/images/like-active.svg">' : '<img src="./assets/images/like-not-active.svg">'}
                       </button>
                       <p class="post-likes-text">
                         Нравится: <strong>${item.likes.length}</strong>
                       </p>
+                    </div>
+                    ${(user._id === item.user.id) ? `<div>
+                      <a data-delete-id=${item.id} class='deletePostButton'>Удалить</a>
+                    </div>`:''}
                     </div>
                     <p class="post-text">
                       <span class="user-name">${item.user.name}</span>
@@ -70,4 +75,5 @@ export function renderPostsPageComponent({ appEl }) {
   }
 
   initUpdateLikesListeners(posts);
+  initDeletePost(POSTS_PAGE);
 }

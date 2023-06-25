@@ -116,6 +116,14 @@
   align-items: center;
 }
 
+.post-likes-with-del {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
 .like-button {
   border: none;
   background-color: transparent;

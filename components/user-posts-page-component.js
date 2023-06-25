@@ -1,7 +1,7 @@
 import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { posts, goToPage } from "../index.js";
-import { initUpdateLikesListeners } from "../helpers.js";
+import { initUpdateLikesListeners, initDeletePost } from "../helpers.js";
 
 export function renderUserPostsPageComponent({ appEl }) {
 
@@ -22,6 +22,7 @@ export function renderUserPostsPageComponent({ appEl }) {
                     <div class="post-image-container">
                       <img class="post-image" src=${item.imageUrl}>
                     </div>
+                    <div class="post-likes-with-del">
                     <div class="post-likes">
                       <button data-post-id=${item.id} data-index='${index}' class="like-button ">
                         ${ item.isLiked ? '<img src="./assets/images/like-active.svg">' :'<img src="./assets/images/like-not-active.svg">'}
@@ -29,6 +30,10 @@ export function renderUserPostsPageComponent({ appEl }) {
                       <p class="post-likes-text">
                         Нравится: <strong>${item.likes.length}</strong>
                       </p>
+                    </div>
+                    ${(user._id === item.user.id) ? `<div>
+                      <a data-delete-id=${item.id} class='deletePostButton'>Удалить</a>
+                    </div>`: ''}
                     </div>
                     <p class="post-text">
                       <span class="user-name">${item.user.name}</span>
@@ -53,7 +58,7 @@ export function renderUserPostsPageComponent({ appEl }) {
     renderHeaderComponent({
         element: document.querySelector(".header-container"),
     });
-    
+
     for (let userEl of document.querySelectorAll(".post-header")) {
         userEl.addEventListener("click", () => {
             goToPage(USER_POSTS_PAGE, {
@@ -63,4 +68,5 @@ export function renderUserPostsPageComponent({ appEl }) {
     }
 
     initUpdateLikesListeners(posts);
+    initDeletePost(USER_POSTS_PAGE);
 }
