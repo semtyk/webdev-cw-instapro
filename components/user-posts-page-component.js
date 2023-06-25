@@ -4,6 +4,7 @@ import { posts, goToPage, user } from "../index.js";
 import { initUpdateLikesListeners } from "../helpers.js";
 import { delPost } from "../api.js";
 import { getToken } from "../index.js";
+import { formatDate } from "../lib/formatDate.js";
 
 export function renderUserPostsPageComponent({ appEl }) {
 
@@ -42,7 +43,7 @@ export function renderUserPostsPageComponent({ appEl }) {
                       ${item.description}
                     </p>
                     <p class="post-date">
-                      ${new Date(item.createdAt)}
+                      ${formatDate(new Date(item.createdAt))}
                     </p>
                   </li>`
   }).join('');
