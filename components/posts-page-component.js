@@ -1,7 +1,9 @@
 import { POSTS_PAGE, USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { posts, goToPage, user } from "../index.js";
-import { initDeletePost, initUpdateLikesListeners } from "../helpers.js";
+import { initUpdateLikesListeners } from "../helpers.js";
+import { delPost } from "../api.js";
+import { getToken } from "../index.js";
 
 export function renderPostsPageComponent({ appEl }) {
   
@@ -35,7 +37,7 @@ export function renderPostsPageComponent({ appEl }) {
                         Нравится: <strong>${item.likes.length}</strong>
                       </p>
                     </div>
-                    ${(user._id === item.user.id) ? `<div>
+                    ${user&&(user._id === item.user.id) ? `<div>
                       <a data-delete-id=${item.id} class='deletePostButton'>Удалить</a>
                     </div>`:''}
                     </div>
@@ -74,6 +76,22 @@ export function renderPostsPageComponent({ appEl }) {
     });
   }
 
+  const deleteButtons = document.querySelectorAll(".deletePostButton");
+  for (const deleteButtonEl of deleteButtons) {
+    deleteButtonEl.addEventListener("click", () => {
+      const token = getToken();
+      if (token) {
+        return delPost({ PostId: deleteButtonEl.dataset.deleteId, token: getToken() })
+          .then(() => {
+            goToPage(POSTS_PAGE);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      } else { console.log('Не авторизованным пользователям нельзя удалять посты'); }
+    })
+  };
+
   initUpdateLikesListeners(posts);
-  initDeletePost(POSTS_PAGE);
+  //initDeletePost(POSTS_PAGE);
 }

@@ -1,5 +1,5 @@
-import { sendLikePost,delPost } from "./api.js";
-import { getToken, renderApp, goToPage } from "./index.js";
+import { sendLikePost} from "./api.js";
+import { getToken, renderApp} from "./index.js";
 
 
 export function saveUserToLocalStorage(user) {
@@ -48,25 +48,5 @@ export const initUpdateLikesListeners = (array) => {
   };
 }
 
-//Функция для включения удаления поста
-export const initDeletePost = (pageToGo) => {
-  const token = getToken();
-  const deleteButtons = document.querySelectorAll(".deletePostButton");
 
-  for (const deleteButtonEl of deleteButtons) {
-
-    deleteButtonEl.addEventListener("click", () => {
-      if (token) {
-        return delPost({ PostId: deleteButtonEl.dataset.deleteId, token: getToken()})
-          .then(() => {
-            goToPage(pageToGo);
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      } else { console.log('Не авторизованным пользователям нельзя удалять посты'); }
-    })
-
-  };
-}
 
