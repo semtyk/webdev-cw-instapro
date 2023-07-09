@@ -1,4 +1,4 @@
-import { POSTS_PAGE, USER_POSTS_PAGE } from "../routes.js";
+import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { posts, goToPage, user } from "../index.js";
 import { initUpdateLikesListeners } from "../helpers.js";
@@ -6,21 +6,17 @@ import { delPost } from "../api.js";
 import { getToken } from "../index.js";
 import { formatDate } from "../lib/formatDate.js";
 
-export function renderPostsPageComponent({ appEl }) {
-  
-  console.log("Актуальный список постов:", posts);
+export function renderUserPostsPageComponent({ appEl }) {
+
+  console.log("Актуальный список постов юзера:", posts);
 
   /**
    * TODO: чтобы отформатировать дату создания поста в виде "19 минут назад"
    * можно использовать https://date-fns.org/v2.29.3/docs/formatDistanceToNow
    */
   //Преобразуем массив обьектов (каждый обьект - содержание поста) в элементы списка разметки
-  
+
   const postsHtml = posts.map((item, index) => {
-    let activeLike = '';
-    if (item.isLiked) {
-      activeLike = '-active-like'
-    }
     return `<li class="post">
                     <div class="post-header" data-user-id=${item.user.id}>
                         <img src=${item.user.imageUrl} class="post-header__user-image">
@@ -38,9 +34,9 @@ export function renderPostsPageComponent({ appEl }) {
                         Нравится: <strong>${item.likes.length}</strong>
                       </p>
                     </div>
-                    ${user&&(user._id === item.user.id) ? `<div>
-                      <a data-delete-id=${item.id} class='deletePostButton'>Удалить</a>
-                    </div>`:''}
+                    ${user && (user._id === item.user.id) ? `<div>
+                      <a data-delete-id=${item.id} data-user-id=${item.user.id} class='deletePostButton'>Удалить</a>
+                    </div>`: ''}
                     </div>
                     <p class="post-text">
                       <span class="user-name">${item.user.name}</span>
@@ -66,9 +62,6 @@ export function renderPostsPageComponent({ appEl }) {
     element: document.querySelector(".header-container"),
   });
 
-
-
-
   for (let userEl of document.querySelectorAll(".post-header")) {
     userEl.addEventListener("click", () => {
       goToPage(USER_POSTS_PAGE, {
@@ -77,22 +70,24 @@ export function renderPostsPageComponent({ appEl }) {
     });
   }
 
-  const deleteButtons = document.querySelectorAll(".deletePostButton");
-  for (const deleteButtonEl of deleteButtons) {
-    deleteButtonEl.addEventListener("click", () => {
-      const token = getToken();
-      if (token) {
-        return delPost({ PostId: deleteButtonEl.dataset.deleteId, token: getToken() })
-          .then(() => {
-            goToPage(POSTS_PAGE);
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      } else { console.log('Не авторизованным пользователям нельзя удалять посты'); }
-    })
-  };
+      const deleteButtons = document.querySelectorAll(".deletePostButton");
+      for (const deleteButtonEl of deleteButtons) {
+        deleteButtonEl.addEventListener("click", () => {
+          const token = getToken();
+          if (token) {
+            return delPost({ PostId: deleteButtonEl.dataset.deleteId, token: getToken() })
+              .then(() => {
+                goToPage(USER_POSTS_PAGE, {
+                  userId: deleteButtonEl.dataset.userId,
+                });
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          } else { console.log('Не авторизованным пользователям нельзя удалять посты'); }
+        })
+      };
 
   initUpdateLikesListeners(posts);
-  //initDeletePost(POSTS_PAGE);
+  //initDeletePost(USER_POSTS_PAGE);
 }

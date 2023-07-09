@@ -1,6 +1,7 @@
 import { loginUser, registerUser } from "../api.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { renderUploadImageComponent } from "./upload-image-component.js";
+import { letClearForm } from "../helpers.js";
 
 export function renderAuthPageComponent({ appEl, setUser }) {
   let isLoginMode = true;
@@ -60,6 +61,7 @@ export function renderAuthPageComponent({ appEl, setUser }) {
       appEl.querySelector(".form-error").textContent = message;
     };
 
+
     renderHeaderComponent({
       element: document.querySelector(".header-container"),
     });
@@ -75,25 +77,38 @@ export function renderAuthPageComponent({ appEl, setUser }) {
       });
     }
 
+    document.getElementById('login-input').addEventListener('click', () => {
+      letClearForm(document.getElementById('login-input'));
+    });
+    
+    document.getElementById('password-input').addEventListener('click', () => {
+      letClearForm(document.getElementById('password-input'));
+    });
+
     document.getElementById("login-button").addEventListener("click", () => {
       setError("");
 
       if (isLoginMode) {
         const login = document.getElementById("login-input").value;
         const password = document.getElementById("password-input").value;
-
-        if (!login) {
-          alert("Введите логин");
+        
+        //Валидация формы инпута
+        if (login.replaceAll("\n", "").replaceAll(' ', '') === "") {
+          document.getElementById("login-input").classList.add('error');
           return;
         }
-
-        if (!password) {
-          alert("Введите пароль");
+        
+        //Валидация формы ввода пароля
+        if (password.replaceAll("\n", "").replaceAll(' ', '') === "") {
+          document.getElementById("password-input").classList.add('error');
           return;
         }
 
         loginUser({
-          login: login,
+          login: login.replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;"),
           password: password,
         })
           .then((user) => {
@@ -107,17 +122,21 @@ export function renderAuthPageComponent({ appEl, setUser }) {
         const login = document.getElementById("login-input").value;
         const name = document.getElementById("name-input").value;
         const password = document.getElementById("password-input").value;
-        if (!name) {
-          alert("Введите имя");
+
+        //Валидация формы инпута логина
+        if (name.replaceAll("\n", "").replaceAll(' ', '') === "") {
+          document.getElementById("name-input").classList.add('error');
           return;
         }
-        if (!login) {
-          alert("Введите логин");
+        //Валидация формы инпута логина
+        if (login.replaceAll("\n", "").replaceAll(' ', '') === "") {
+          document.getElementById("login-input").classList.add('error');
           return;
         }
 
-        if (!password) {
-          alert("Введите пароль");
+        //Валидация формы ввода пароля
+        if (password.replaceAll("\n", "").replaceAll(' ', '') === "") {
+          document.getElementById("password-input").classList.add('error');
           return;
         }
 
@@ -127,9 +146,15 @@ export function renderAuthPageComponent({ appEl, setUser }) {
         }
 
         registerUser({
-          login: login,
+          login: login.replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;"), 
           password: password,
-          name: name,
+          name: name.replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;"),
           imageUrl,
         })
           .then((user) => {
